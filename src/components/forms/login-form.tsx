@@ -76,7 +76,7 @@ export function LoginForm({ next }: { next?: string }) {
           {pending ? "Preparing workspace..." : "Create demo workspace"}
         </Button>
       </div>
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="flex flex-col items-start gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <span>Use the default advisor credentials or create the workspace on first run.</span>
         <Link className="text-primary hover:underline" href="/settings">
           Demo settings

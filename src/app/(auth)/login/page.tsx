@@ -25,10 +25,16 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="grid min-h-screen bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_10%,white_90%),transparent_52%),linear-gradient(180deg,transparent,rgba(255,255,255,0.65))] lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="hidden flex-col justify-between border-r border-border/70 p-10 lg:flex">
+    <div
+      className="grid min-h-screen overflow-hidden bg-background lg:grid-cols-[1.1fr_0.9fr]"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at top left, color-mix(in oklch, var(--primary) 18%, transparent), transparent 34rem), radial-gradient(circle at bottom right, color-mix(in oklch, var(--chart-2) 14%, transparent), transparent 28rem), linear-gradient(180deg, color-mix(in oklch, var(--background) 82%, transparent), color-mix(in oklch, var(--background) 92%, var(--muted)))",
+      }}
+    >
+      <div className="hidden flex-col justify-between border-r border-border/60 bg-background/45 p-10 backdrop-blur-sm lg:flex">
         <BrandMark />
-        <div className="max-w-xl space-y-6">
+        <div className="max-w-xl space-y-6 rounded-[2rem] border border-border/60 bg-background/72 p-8 shadow-lg shadow-black/5 backdrop-blur-sm">
           <Badge variant="secondary">Advisor OS</Badge>
           <h1 className="text-5xl font-semibold tracking-tight text-foreground">
             Client relationships, portfolio intelligence, and compliance rhythm
@@ -48,7 +54,7 @@ export default async function LoginPage({
           ].map(([value, label]) => (
             <div
               key={label}
-              className="rounded-3xl border border-border/70 bg-card/80 p-5"
+              className="rounded-3xl border border-border/60 bg-card/78 p-5 shadow-sm shadow-black/5 backdrop-blur-sm"
             >
               <p className="text-2xl font-semibold">{value}</p>
               <p className="mt-1 text-sm text-muted-foreground">{label}</p>
@@ -57,7 +63,7 @@ export default async function LoginPage({
         </div>
       </div>
       <div className="flex items-center justify-center px-4 py-10 sm:px-8">
-        <Card className="w-full max-w-lg bg-card/95 shadow-xl shadow-primary/5">
+        <Card className="w-full max-w-lg border border-border/60 bg-card/90 shadow-2xl shadow-black/10 backdrop-blur-xl">
           <CardHeader className="space-y-3 border-b border-border/60">
             <Badge variant="outline" className="w-fit">
               Secure advisor access
