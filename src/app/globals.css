@@ -48,6 +48,8 @@
 }
 
 :root {
+  --font-sans: "Avenir Next", "Manrope", "Segoe UI", sans-serif;
+  --font-geist-mono: "SFMono-Regular", "IBM Plex Mono", "Menlo", monospace;
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);
   --card: oklch(1 0 0);
@@ -122,8 +124,17 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at top left, color-mix(in oklch, var(--color-chart-1) 18%, transparent), transparent 24rem),
+      radial-gradient(circle at top right, color-mix(in oklch, var(--color-chart-2) 14%, transparent), transparent 20rem),
+      linear-gradient(180deg, color-mix(in oklch, var(--background) 92%, white 8%), var(--background));
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 28%, white 72%);
+    color: var(--foreground);
   }
 }
