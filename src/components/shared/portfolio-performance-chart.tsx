@@ -1,12 +1,19 @@
-import { monthlyPerformance } from "@/lib/mock-data";
+type PortfolioPerformanceChartProps = {
+  points: Array<{
+    label: string;
+    value: number;
+  }>;
+};
 
-const maxValue = Math.max(...monthlyPerformance.map((entry) => entry.value));
+export function PortfolioPerformanceChart({
+  points = [],
+}: Partial<PortfolioPerformanceChartProps>) {
+  const maxValue = Math.max(...points.map((entry) => entry.value), 1);
 
-export function PortfolioPerformanceChart() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6 md:gap-3">
-        {monthlyPerformance.map((entry) => (
+        {points.map((entry) => (
           <div key={entry.label} className="space-y-2">
             <div className="flex h-28 items-end rounded-2xl bg-muted/60 p-2 sm:h-32 md:h-36 xl:h-40">
               <div
@@ -26,8 +33,7 @@ export function PortfolioPerformanceChart() {
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        Simulated aggregate market value trend based on the WealthFlow advisor
-        dashboard blueprint.
+        Aggregate market value trend rendered from live portfolio snapshots in Supabase.
       </p>
     </div>
   );

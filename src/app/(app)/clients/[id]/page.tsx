@@ -23,13 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatCurrency, formatDate, formatDateTime } from "@/lib/format";
-import {
-  clients,
-  documents,
-  goals,
-  transactions,
-} from "@/lib/mock-data";
+import { formatCurrency, formatDateTime } from "@/lib/format";
+import { getClientDetailData } from "@/lib/wealthflow/server";
 
 export default async function ClientDetailPage({
   params,
@@ -37,76 +32,78 @@ export default async function ClientDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const client = clients.find((entry) => entry.id === id);
+  const detail = await getClientDetailData(id);
 
-  if (!client) {
+  if (!detail) {
     notFound();
   }
 
-  const clientGoals = goals.filter((goal) => goal.clientId === client.id);
-  const clientDocuments = documents.filter(
-    (document) => document.clientName === client.name
+  const totalAum = detail.portfolios.reduce(
+    (sum, portfolio) => sum + Number(portfolio.market_value),
+    0
   );
-  const clientTransactions = transactions
-    .filter((transaction) => transaction.clientName === client.name)
-    .slice(0, 5);
 
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Client 360"
-        title={client.name}
-        description={`${client.segment} household in ${client.city} with ${client.riskProfile?.toLowerCase()} suitability profile and an upcoming review already queued.`}
-        badge={client.status}
+        title={detail.client.household_name}
+        description={`${detail.client.city ?? "Client city unavailable"} household with ${
+          detail.client.risk_profile?.toLowerCase() ?? "unassigned"
+        } suitability and live portfolios, tasks, documents, and meetings from Supabase.`}
+        badge={detail.client.client_status}
       />
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardDescription>Relationship value</CardDescription>
-            <CardTitle>{formatCurrency(client.aum)}</CardTitle>
+            <CardTitle>{formatCurrency(totalAum)}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
-            <CardDescription>Next review</CardDescription>
-            <CardTitle>{formatDateTime(client.nextReviewAt)}</CardTitle>
+            <CardDescription>Client since</CardDescription>
+            <CardTitle>{formatDateTime(detail.client.created_at)}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
             <CardDescription>Risk profile</CardDescription>
-            <CardTitle>{client.riskProfile}</CardTitle>
+            <CardTitle>{detail.client.risk_profile ?? "Unassigned"}</CardTitle>
           </CardHeader>
         </Card>
       </div>
-      <Tabs defaultValue="overview">
+      <Tabs defaultValue="portfolios">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
+          <TabsTrigger value="portfolios">Portfolios</TabsTrigger>
+          <TabsTrigger value="tasks">Tasks</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="meetings">Meetings</TabsTrigger>
         </TabsList>
-        <TabsContent value="overview" className="pt-4">
+        <TabsContent value="portfolios" className="pt-4">
           <Card>
             <CardHeader className="border-b border-border/60">
-              <CardTitle>Recent transactions</CardTitle>
+              <CardTitle>Related portfolios</CardTitle>
             </CardHeader>
             <CardContent className="pt-5">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
+                    <TableHead>Portfolio</TableHead>
                     <TableHead>Type</TableHead>
-                    <TableHead>Security</TableHead>
-                    <TableHead>Amount</TableHead>
+                    <TableHead>Custodian</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Value</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {clientTransactions.map((transaction) => (
-                    <TableRow key={transaction.id}>
-                      <TableCell>{formatDate(transaction.tradeDate)}</TableCell>
-                      <TableCell>{transaction.type}</TableCell>
-                      <TableCell>{transaction.security}</TableCell>
-                      <TableCell>{formatCurrency(transaction.amount)}</TableCell>
+                  {detail.portfolios.map((portfolio) => (
+                    <TableRow key={portfolio.id}>
+                      <TableCell>{portfolio.name}</TableCell>
+                      <TableCell>{portfolio.account_type}</TableCell>
+                      <TableCell>{portfolio.custodian ?? "Unknown"}</TableCell>
+                      <TableCell>{portfolio.portfolio_status}</TableCell>
+                      <TableCell>{formatCurrency(Number(portfolio.market_value))}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -114,29 +111,38 @@ export default async function ClientDetailPage({
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="goals" className="pt-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {clientGoals.map((goal) => (
-              <Card key={goal.id}>
-                <CardHeader>
-                  <CardDescription>{goal.name}</CardDescription>
-                  <CardTitle>{formatCurrency(goal.targetAmount)}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="h-3 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-primary"
-                      style={{ width: `${goal.progressPercent}%` }}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>{goal.progressPercent}% funded</span>
-                    <Badge variant="outline">{formatDate(goal.targetDate)}</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        <TabsContent value="tasks" className="pt-4">
+          <Card>
+            <CardHeader className="border-b border-border/60">
+              <CardTitle>Client tasks</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-5">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Task</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Due</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {detail.tasks.map((task) => (
+                    <TableRow key={task.id}>
+                      <TableCell>{task.title}</TableCell>
+                      <TableCell>{task.task_type}</TableCell>
+                      <TableCell>{task.priority}</TableCell>
+                      <TableCell>{task.status}</TableCell>
+                      <TableCell>
+                        {task.due_at ? formatDateTime(task.due_at) : "No due date"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </TabsContent>
         <TabsContent value="documents" className="pt-4">
           <Card>
@@ -144,7 +150,7 @@ export default async function ClientDetailPage({
               <CardTitle>Document vault</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 pt-5">
-              {clientDocuments.map((document) => (
+              {detail.documents.map((document) => (
                 <div
                   key={document.id}
                   className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/20 p-3"
@@ -152,12 +158,51 @@ export default async function ClientDetailPage({
                   <div>
                     <p className="font-medium">{document.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      Uploaded {formatDate(document.uploadedAt)}
+                      Uploaded {formatDateTime(document.uploaded_at)}
                     </p>
                   </div>
-                  <Badge variant="secondary">{document.category}</Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">{document.document_category}</Badge>
+                    <a
+                      className="text-sm font-medium text-primary hover:underline"
+                      href={`/api/documents/${document.id}/download`}
+                    >
+                      Download
+                    </a>
+                  </div>
                 </div>
               ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="meetings" className="pt-4">
+          <Card>
+            <CardHeader className="border-b border-border/60">
+              <CardTitle>Client meetings</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-5">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Meeting</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Channel</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Starts</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {detail.meetings.map((meeting) => (
+                    <TableRow key={meeting.id}>
+                      <TableCell>{meeting.title}</TableCell>
+                      <TableCell>{meeting.meeting_type}</TableCell>
+                      <TableCell>{meeting.channel}</TableCell>
+                      <TableCell>{meeting.status}</TableCell>
+                      <TableCell>{formatDateTime(meeting.starts_at)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>

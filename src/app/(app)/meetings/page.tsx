@@ -10,16 +10,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime } from "@/lib/format";
-import { meetings } from "@/lib/mock-data";
+import { getMeetingsPageData } from "@/lib/wealthflow/server";
 
-export default function MeetingsPage() {
+export default async function MeetingsPage() {
+  const { meetings } = await getMeetingsPageData();
+
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Calendar"
         title="Upcoming meetings"
         description="Client reviews, planning calls, and follow-up sessions ready for prep, agenda sharing, and note capture."
-        badge="10 seeded meetings"
+        badge={`${meetings.length} live meetings`}
       />
       <Card>
         <CardHeader className="border-b border-border/60">
@@ -34,6 +36,7 @@ export default function MeetingsPage() {
                 <TableHead>Start</TableHead>
                 <TableHead>Channel</TableHead>
                 <TableHead>Location</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -41,11 +44,14 @@ export default function MeetingsPage() {
                 <TableRow key={meeting.id}>
                   <TableCell className="font-medium">{meeting.title}</TableCell>
                   <TableCell>{meeting.clientName}</TableCell>
-                  <TableCell>{formatDateTime(meeting.startsAt)}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{meeting.channel}</Badge>
-                  </TableCell>
+                  <TableCell>{formatDateTime(meeting.starts_at)}</TableCell>
+                  <TableCell>{meeting.channel}</TableCell>
                   <TableCell>{meeting.location}</TableCell>
+                  <TableCell>
+                    <Badge variant={meeting.status === "scheduled" ? "secondary" : "outline"}>
+                      {meeting.status}
+                    </Badge>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+import { bootstrapWorkspace } from "./helpers";
+
 test("portfolios navigation opens the portfolio ledger", async ({ page }) => {
-  await page.goto("/dashboard");
+  await bootstrapWorkspace(page);
 
   await page.getByRole("link", { name: "Portfolios" }).click();
 
@@ -10,5 +12,6 @@ test("portfolios navigation opens the portfolio ledger", async ({ page }) => {
     page.getByRole("heading", { name: "Managed portfolios" })
   ).toBeVisible();
   await expect(page.getByText("Portfolio ledger")).toBeVisible();
+  await expect(page.getByText("Performance chart")).toBeVisible();
   await expect(page.getByRole("cell", { name: "Aarav Core Wealth" })).toBeVisible();
 });

@@ -26,12 +26,38 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const pathname = request.nextUrl.pathname;
+  const isLoginRoute = pathname === "/login";
+  const isStaticAsset =
+    pathname.startsWith("/_next") ||
+    pathname === "/favicon.ico" ||
+    /\.(?:svg|png|jpg|jpeg|gif|webp|ico)$/.test(pathname);
+
+  if (isStaticAsset) {
+    return supabaseResponse;
+  }
+
+  if (!user && !isLoginRoute) {
+    const loginUrl = new URL("/login", request.url);
+
+    if (pathname !== "/") {
+      loginUrl.searchParams.set("next", pathname);
+    }
+
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (user && isLoginRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   return supabaseResponse;
 }
 
-export const proxyConfig = {
+export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],

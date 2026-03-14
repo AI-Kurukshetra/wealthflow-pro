@@ -1,18 +1,7 @@
-import { IconUpload } from "@tabler/icons-react";
-
+import { DocumentUploadDialog } from "@/components/documents/document-upload-dialog";
 import { PageHeader } from "@/components/shell/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,10 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate } from "@/lib/format";
-import { documents } from "@/lib/mock-data";
+import { formatDate, formatFileSize } from "@/lib/format";
+import { getDocumentsPageData } from "@/lib/wealthflow/server";
 
-export default function DocumentsPage() {
+export default async function DocumentsPage() {
+  const { clients, documents, organizationId, workspace } = await getDocumentsPageData();
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -32,28 +23,11 @@ export default function DocumentsPage() {
         title="Client document vault"
         description="Storage metadata, category governance, and upload pathways aligned with private advisory workflows."
         actions={
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button>
-                <IconUpload data-icon="inline-start" />
-                Upload document
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Upload workflow</DialogTitle>
-                <DialogDescription>
-                  The scaffold reserves this dialog for signed uploads and private
-                  bucket handling.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-3">
-                <Input placeholder="Document name" />
-                <Input placeholder="Client household" />
-                <Input type="file" />
-              </div>
-            </DialogContent>
-          </Dialog>
+          <DocumentUploadDialog
+            clients={clients}
+            organizationId={organizationId}
+            viewerId={workspace.user.id}
+          />
         }
       />
       <Card>
@@ -68,6 +42,8 @@ export default function DocumentsPage() {
                 <TableHead>Client</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Uploaded</TableHead>
+                <TableHead>Size</TableHead>
+                <TableHead className="text-right">Download</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -76,9 +52,18 @@ export default function DocumentsPage() {
                   <TableCell className="font-medium">{document.name}</TableCell>
                   <TableCell>{document.clientName}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{document.category}</Badge>
+                    <Badge variant="secondary">{document.document_category}</Badge>
                   </TableCell>
-                  <TableCell>{formatDate(document.uploadedAt)}</TableCell>
+                  <TableCell>{formatDate(document.uploaded_at)}</TableCell>
+                  <TableCell>{formatFileSize(document.size_bytes)}</TableCell>
+                  <TableCell className="text-right">
+                    <a
+                      className="text-sm font-medium text-primary hover:underline"
+                      href={`/api/documents/${document.id}/download`}
+                    >
+                      Download
+                    </a>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

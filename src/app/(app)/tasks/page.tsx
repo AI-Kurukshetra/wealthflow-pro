@@ -1,18 +1,11 @@
+import { TaskWorkspace } from "@/components/tasks/task-workspace";
 import { PageHeader } from "@/components/shell/page-header";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { formatDateTime } from "@/lib/format";
-import { tasks } from "@/lib/mock-data";
+import { getTasksPageData } from "@/lib/wealthflow/server";
 
-export default function TasksPage() {
+export default async function TasksPage() {
+  const { clients, portfolios, tasks, workspace } = await getTasksPageData();
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -25,32 +18,13 @@ export default function TasksPage() {
           <CardTitle>Open work</CardTitle>
         </CardHeader>
         <CardContent className="pt-5">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Task</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Due</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tasks.map((task) => (
-                <TableRow key={task.id}>
-                  <TableCell className="font-medium">{task.title}</TableCell>
-                  <TableCell>{task.clientName}</TableCell>
-                  <TableCell>
-                    <Badge variant={task.priority === "High" ? "default" : "outline"}>
-                      {task.priority}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{task.status}</TableCell>
-                  <TableCell>{formatDateTime(task.dueAt)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <TaskWorkspace
+            clients={clients}
+            organizationId={workspace.organization!.id}
+            portfolios={portfolios}
+            tasks={tasks}
+            viewerId={workspace.user.id}
+          />
         </CardContent>
       </Card>
     </div>

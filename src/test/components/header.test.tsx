@@ -9,12 +9,30 @@ jest.mock("next/navigation", () => ({
 }));
 
 const mockedUsePathname = usePathname as jest.MockedFunction<typeof usePathname>;
+const viewer = {
+  name: "Vineeth Motati",
+  email: "vineeth.motati@wealthflow.in",
+  title: "Senior Wealth Advisor",
+  initials: "VM",
+};
+const notifications = [
+  {
+    id: "notification-1",
+    title: "Quarterly review due this week",
+    notification_type: "task",
+    is_read: false,
+    created_at: "2026-03-14T09:00:00.000Z",
+  },
+];
 
 describe("AppHeader", () => {
   it("derives the client profile label from nested client routes", () => {
     mockedUsePathname.mockReturnValue("/clients/client-001");
 
-    renderWithAppProviders(<AppHeader />, { withSidebarProvider: true });
+    renderWithAppProviders(
+      <AppHeader notifications={notifications} viewer={viewer} />,
+      { withSidebarProvider: true }
+    );
 
     expect(screen.getByText("Client profile")).toBeInTheDocument();
     expect(
@@ -28,7 +46,10 @@ describe("AppHeader", () => {
     mockedUsePathname.mockReturnValue("/dashboard");
     const user = userEvent.setup();
 
-    renderWithAppProviders(<AppHeader />, { withSidebarProvider: true });
+    renderWithAppProviders(
+      <AppHeader notifications={notifications} viewer={viewer} />,
+      { withSidebarProvider: true }
+    );
 
     await user.click(screen.getByRole("button", { name: "Toggle theme" }));
 

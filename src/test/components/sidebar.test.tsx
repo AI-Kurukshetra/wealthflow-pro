@@ -8,6 +8,14 @@ jest.mock("next/navigation", () => ({
 }));
 
 const mockedUsePathname = usePathname as jest.MockedFunction<typeof usePathname>;
+const viewer = {
+  name: "Vineeth Motati",
+  email: "vineeth.motati@wealthflow.in",
+  title: "Senior Wealth Advisor",
+  initials: "VM",
+  organizationName: "WealthFlow Advisory",
+  organizationLocation: "India • Asia/Kolkata",
+};
 
 describe("AppSidebar", () => {
   beforeEach(() => {
@@ -15,7 +23,7 @@ describe("AppSidebar", () => {
   });
 
   it("renders the primary navigation links", () => {
-    renderWithAppProviders(<AppSidebar />, { withSidebarProvider: true });
+    renderWithAppProviders(<AppSidebar viewer={viewer} />, { withSidebarProvider: true });
 
     expect(screen.getByText("Platform")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
@@ -33,7 +41,7 @@ describe("AppSidebar", () => {
   });
 
   it("keeps the clients entry active for nested client profile routes", () => {
-    renderWithAppProviders(<AppSidebar />, { withSidebarProvider: true });
+    renderWithAppProviders(<AppSidebar viewer={viewer} />, { withSidebarProvider: true });
 
     const clientsLink = screen.getByRole("link", { name: "Clients" });
 

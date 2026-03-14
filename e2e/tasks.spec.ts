@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+import { bootstrapWorkspace } from "./helpers";
+
 test("tasks navigation opens the advisor workload view", async ({ page }) => {
-  await page.goto("/dashboard");
+  await bootstrapWorkspace(page);
 
   await page.getByRole("link", { name: "Tasks" }).click();
 
@@ -15,6 +17,13 @@ test("tasks navigation opens the advisor workload view", async ({ page }) => {
   ).toBeVisible();
 });
 
-test.fixme("creates a new task from the tasks workspace", async () => {
-  // The current mock-backed tasks route does not expose task-creation controls yet.
+test("creates a new task from the tasks workspace", async ({ page }) => {
+  await bootstrapWorkspace(page);
+
+  await page.getByRole("link", { name: "Tasks" }).click();
+  await page.getByRole("button", { name: "New task" }).click();
+  await page.getByLabel("Task").fill("Call client about KYC refresh");
+  await page.getByRole("button", { name: "Create task" }).click();
+
+  await expect(page.getByRole("cell", { name: "Call client about KYC refresh" })).toBeVisible();
 });

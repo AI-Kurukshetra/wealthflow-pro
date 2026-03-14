@@ -33,10 +33,10 @@ const clientStatuses: ClientStatus[] = [
 const riskProfiles = ["Conservative", "Balanced", "Growth", "Aggressive"];
 
 export const advisorProfile = {
-  name: "Neha Bansal",
-  email: "neha.bansal@wealthflow.in",
+  name: "Vineeth Motati",
+  email: "vineeth.motati@wealthflow.in",
   title: "Senior Wealth Advisor",
-  initials: "NB",
+  initials: "VM",
   firm: "WealthFlow Advisory",
 };
 

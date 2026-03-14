@@ -8,7 +8,6 @@ import {
   IconShieldCheck,
 } from "@tabler/icons-react";
 
-import { advisorProfile } from "@/lib/mock-data";
 import { primaryNavigation } from "@/lib/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +32,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  viewer: {
+    name: string;
+    email: string;
+    title: string;
+    initials: string;
+    organizationName: string;
+    organizationLocation: string;
+  };
+};
+
+export function AppSidebar({ viewer }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -54,10 +64,10 @@ export function AppSidebar() {
             <div className="flex items-center justify-between gap-2">
               <div className="min-w-0">
                 <p className="truncate font-medium text-sidebar-foreground">
-                  {advisorProfile.firm}
+                  {viewer.organizationName}
                 </p>
                 <p className="truncate text-xs text-sidebar-foreground/70">
-                  Mumbai, India
+                  {viewer.organizationLocation}
                 </p>
               </div>
               <Badge className="shrink-0" variant="secondary">
@@ -75,7 +85,7 @@ export function AppSidebar() {
             </TooltipTrigger>
             <TooltipContent side="right">
               <div className="space-y-1">
-                <p className="font-medium">{advisorProfile.firm}</p>
+                <p className="font-medium">{viewer.organizationName}</p>
                 <p className="text-[11px] text-background/70">
                   Advisor intelligence cockpit
                 </p>
@@ -177,14 +187,14 @@ export function AppSidebar() {
       <SidebarFooter className="overflow-x-hidden border-t border-sidebar-border/70">
         <div className="flex max-h-24 min-w-0 items-center gap-3 overflow-hidden rounded-2xl bg-sidebar-accent/50 p-3 transition-[max-height,opacity,transform] duration-200 ease-out group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:translate-y-1 group-data-[collapsible=icon]:opacity-0">
           <Avatar className="size-10">
-            <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
+            <AvatarFallback>{viewer.initials}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-sidebar-foreground">
-              {advisorProfile.name}
+              {viewer.name}
             </p>
             <p className="truncate text-xs text-sidebar-foreground/70">
-              {advisorProfile.email}
+              {viewer.email}
             </p>
           </div>
           <IconArrowUpRight className="size-4 text-sidebar-foreground/70" />
@@ -193,24 +203,24 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label={advisorProfile.name}
+                aria-label={viewer.name}
                 className="size-12 rounded-2xl bg-sidebar-accent/40 hover:bg-sidebar-accent"
                 size="icon-lg"
                 variant="ghost"
               >
                 <Avatar className="size-10">
-                  <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
+                  <AvatarFallback>{viewer.initials}</AvatarFallback>
                 </Avatar>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right">
               <div className="space-y-1">
-                <p className="font-medium">{advisorProfile.name}</p>
+                <p className="font-medium">{viewer.name}</p>
                 <p className="text-[11px] leading-4 text-background/70">
-                  {advisorProfile.title}
+                  {viewer.title}
                 </p>
                 <p className="text-[11px] leading-4 text-background/70">
-                  {advisorProfile.email}
+                  {viewer.email}
                 </p>
               </div>
             </TooltipContent>

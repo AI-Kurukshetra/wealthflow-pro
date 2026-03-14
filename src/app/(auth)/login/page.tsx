@@ -1,9 +1,29 @@
+import { redirect } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BrandMark } from "@/components/shell/brand-mark";
 import { LoginForm } from "@/components/forms/login-form";
+import { createClient } from "@/lib/supabase/server";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const supabase = await createClient();
+  const next = (await searchParams).next;
+
+  if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      redirect("/dashboard");
+    }
+  }
+
   return (
     <div className="grid min-h-screen bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_10%,white_90%),transparent_52%),linear-gradient(180deg,transparent,rgba(255,255,255,0.65))] lg:grid-cols-[1.1fr_0.9fr]">
       <div className="hidden flex-col justify-between border-r border-border/70 p-10 lg:flex">
@@ -42,12 +62,16 @@ export default function LoginPage() {
             <Badge variant="outline" className="w-fit">
               Secure advisor access
             </Badge>
-            <CardTitle className="text-3xl font-semibold tracking-tight">
+            <CardTitle
+              aria-level={1}
+              className="text-3xl font-semibold tracking-tight"
+              role="heading"
+            >
               Log in to WealthFlow
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
-            <LoginForm />
+            <LoginForm next={next} />
           </CardContent>
         </Card>
       </div>

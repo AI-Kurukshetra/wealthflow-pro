@@ -22,7 +22,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
 });
 
 const organizationId = stableUuid("wealthflow-organization");
-const advisorEmail = "neha.bansal@wealthflow.in";
+const advisorEmail = "vineeth.motati@wealthflow.in";
 
 function stableUuid(seed) {
   const hex = createHash("sha256").update(seed).digest("hex").slice(0, 32);
@@ -61,7 +61,7 @@ async function getOrCreateAdvisorUser() {
     password: "WealthFlow123!",
     email_confirm: true,
     user_metadata: {
-      full_name: "Neha Bansal",
+      full_name: "Vineeth Motati",
     },
   });
 
@@ -437,7 +437,7 @@ async function main() {
   const profiles = [
     {
       id: advisorId,
-      full_name: "Neha Bansal",
+      full_name: "Vineeth Motati",
       email: advisorEmail,
       phone: "+91 9890012345",
       job_title: "Senior Wealth Advisor",
