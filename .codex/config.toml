@@ -1,0 +1,13 @@
+approval_policy = "on-request"
+
+[mcp_servers.next-devtools]
+command = "npx"
+args = ["-y", "next-devtools-mcp@latest"]
+startup_timeout_sec = 20
+
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp"
+
+[features]
+unified_exec = true
+undo = true
