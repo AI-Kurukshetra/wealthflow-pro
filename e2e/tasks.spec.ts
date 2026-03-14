@@ -18,12 +18,18 @@ test("tasks navigation opens the advisor workload view", async ({ page }) => {
 });
 
 test("creates a new task from the tasks workspace", async ({ page }) => {
+  const taskTitle = `Call client about KYC refresh ${Date.now()}`;
+
   await bootstrapWorkspace(page);
 
   await page.getByRole("link", { name: "Tasks" }).click();
   await page.getByRole("button", { name: "New task" }).click();
-  await page.getByLabel("Task").fill("Call client about KYC refresh");
-  await page.getByRole("button", { name: "Create task" }).click();
+  const createTaskDialog = page.getByRole("dialog", { name: "Create task" });
 
-  await expect(page.getByRole("cell", { name: "Call client about KYC refresh" })).toBeVisible();
+  await createTaskDialog
+    .getByRole("textbox", { name: /^Task$/ })
+    .fill(taskTitle);
+  await createTaskDialog.getByRole("button", { name: "Create task" }).click();
+
+  await expect(page.getByRole("cell", { name: taskTitle })).toBeVisible();
 });

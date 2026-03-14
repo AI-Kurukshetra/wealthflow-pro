@@ -103,7 +103,7 @@ export async function signOutAction() {
   const supabase = await createClient();
 
   if (supabase) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
   }
 
   redirect("/login");

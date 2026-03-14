@@ -1,6 +1,15 @@
+import { loadEnvConfig } from "@next/env";
 import { defineConfig, devices } from "@playwright/test";
 
+loadEnvConfig(process.cwd(), false);
+
 const isCI = Boolean(process.env.CI);
+const shouldRunWebkit =
+  isCI || process.platform !== "linux" || process.env.PLAYWRIGHT_INCLUDE_WEBKIT === "1";
+const webServerEnv = {
+  ...process.env,
+  NODE_ENV: isCI ? "production" : "development",
+};
 
 export default defineConfig({
   fullyParallel: true,
@@ -12,6 +21,7 @@ export default defineConfig({
   },
   webServer: {
     command: isCI ? "npm run build && npm run start" : "npm run dev",
+    env: webServerEnv,
     reuseExistingServer: !isCI,
     stderr: "pipe",
     stdout: "pipe",
@@ -31,11 +41,15 @@ export default defineConfig({
         ...devices["Desktop Firefox"],
       },
     },
-    {
-      name: "webkit",
-      use: {
-        ...devices["Desktop Safari"],
-      },
-    },
+    ...(shouldRunWebkit
+      ? [
+          {
+            name: "webkit",
+            use: {
+              ...devices["Desktop Safari"],
+            },
+          },
+        ]
+      : []),
   ],
 });
