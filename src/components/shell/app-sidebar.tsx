@@ -24,7 +24,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { BrandMark } from "@/components/shell/brand-mark";
@@ -38,28 +37,36 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" variant="inset">
-      <SidebarHeader className="gap-4 border-b border-sidebar-border/70">
-        <div className="group-data-[collapsible=icon]:hidden">
+    <Sidebar
+      className="overflow-x-hidden"
+      collapsible="icon"
+      variant="inset"
+    >
+      <SidebarHeader className="overflow-x-hidden gap-3 border-b border-sidebar-border/70">
+        <div className="max-h-44 min-w-0 overflow-hidden transition-[max-height,opacity,transform] duration-200 ease-out group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:translate-y-1 group-data-[collapsible=icon]:opacity-0">
           <div className="flex items-start justify-between gap-3">
-            <BrandMark />
-            <Badge variant="secondary">MVP</Badge>
+            <BrandMark className="min-w-0" />
+            <Badge className="shrink-0" variant="secondary">
+              MVP
+            </Badge>
           </div>
-          <div className="mt-4 rounded-2xl border border-sidebar-border/80 bg-sidebar-primary/8 p-3 text-sm">
+          <div className="mt-3 min-w-0 rounded-2xl border border-sidebar-border/80 bg-sidebar-primary/8 p-3 text-sm">
             <div className="flex items-center justify-between gap-2">
-              <div>
-                <p className="font-medium text-sidebar-foreground">
+              <div className="min-w-0">
+                <p className="truncate font-medium text-sidebar-foreground">
                   {advisorProfile.firm}
                 </p>
-                <p className="text-xs text-sidebar-foreground/70">
+                <p className="truncate text-xs text-sidebar-foreground/70">
                   Mumbai, India
                 </p>
               </div>
-              <Badge variant="secondary">MVP</Badge>
+              <Badge className="shrink-0" variant="secondary">
+                MVP
+              </Badge>
             </div>
           </div>
         </div>
-        <div className="hidden items-center justify-center group-data-[collapsible=icon]:flex">
+        <div className="pointer-events-none -mt-14 flex items-center justify-center opacity-0 transition-[margin,opacity] duration-200 ease-out group-data-[collapsible=icon]:pointer-events-auto group-data-[collapsible=icon]:mt-0 group-data-[collapsible=icon]:opacity-100">
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35 p-2.5">
@@ -77,7 +84,7 @@ export function AppSidebar() {
           </Tooltip>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -103,9 +110,14 @@ export function AppSidebar() {
                         ),
                       }}
                     >
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.label}</span>
+                      <Link
+                        className="flex min-w-0 items-center"
+                        href={item.href}
+                      >
+                        <item.icon className="shrink-0" />
+                        <span className="ml-2 min-w-0 max-w-40 truncate transition-[max-width,opacity,margin] duration-200 ease-out group-data-[collapsible=icon]:ml-0 group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0">
+                          {item.label}
+                        </span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -117,7 +129,7 @@ export function AppSidebar() {
         <SidebarSeparator />
         <SidebarGroup>
           <SidebarGroupLabel>Operations</SidebarGroupLabel>
-          <SidebarGroupContent className="group-data-[collapsible=icon]:hidden">
+          <SidebarGroupContent className="max-h-52 overflow-hidden transition-[max-height,opacity,transform] duration-200 ease-out group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:translate-y-1 group-data-[collapsible=icon]:opacity-0">
             <div className="space-y-3 px-2">
               <div className="rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/50 p-3">
                 <p className="text-xs uppercase tracking-[0.2em] text-sidebar-foreground/60">
@@ -135,7 +147,7 @@ export function AppSidebar() {
               </div>
             </div>
           </SidebarGroupContent>
-          <div className="hidden justify-center px-2 group-data-[collapsible=icon]:flex">
+          <div className="pointer-events-none -mt-10 flex justify-center px-2 opacity-0 transition-[margin,opacity] duration-200 ease-out group-data-[collapsible=icon]:pointer-events-auto group-data-[collapsible=icon]:mt-0 group-data-[collapsible=icon]:opacity-100">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -162,8 +174,8 @@ export function AppSidebar() {
           </div>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border/70">
-        <div className="flex items-center gap-3 rounded-2xl bg-sidebar-accent/50 p-3 group-data-[collapsible=icon]:hidden">
+      <SidebarFooter className="overflow-x-hidden border-t border-sidebar-border/70">
+        <div className="flex max-h-24 min-w-0 items-center gap-3 overflow-hidden rounded-2xl bg-sidebar-accent/50 p-3 transition-[max-height,opacity,transform] duration-200 ease-out group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:translate-y-1 group-data-[collapsible=icon]:opacity-0">
           <Avatar className="size-10">
             <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
           </Avatar>
@@ -177,7 +189,7 @@ export function AppSidebar() {
           </div>
           <IconArrowUpRight className="size-4 text-sidebar-foreground/70" />
         </div>
-        <div className="hidden justify-center group-data-[collapsible=icon]:flex">
+        <div className="pointer-events-none -mt-12 flex justify-center opacity-0 transition-[margin,opacity] duration-200 ease-out group-data-[collapsible=icon]:pointer-events-auto group-data-[collapsible=icon]:mt-0 group-data-[collapsible=icon]:opacity-100">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -205,7 +217,6 @@ export function AppSidebar() {
           </Tooltip>
         </div>
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }

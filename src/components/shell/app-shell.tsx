@@ -8,11 +8,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider defaultOpen>
       <AppSidebar />
-      <SidebarInset className="min-h-screen bg-background/80">
-        <AppHeader />
-        <main className="flex flex-1 flex-col px-4 py-6 md:px-6 md:py-7">
-          {children}
-        </main>
+      <SidebarInset className="min-h-svh bg-background/80 md:h-svh md:overflow-hidden">
+        <div className="flex min-h-svh flex-1 flex-col md:h-svh">
+          <AppHeader />
+          <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 md:px-6 md:py-6">
+            {children}
+          </main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

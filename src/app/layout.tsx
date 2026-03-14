@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { geistMono, geistSans } from "./fonts";
@@ -24,10 +25,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} font-sans`}
     >
-      <body className="min-h-screen font-sans antialiased">
-        <TooltipProvider>{children}</TooltipProvider>
+      <body
+        suppressHydrationWarning
+        className="min-h-screen font-sans antialiased"
+      >
+        <ThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

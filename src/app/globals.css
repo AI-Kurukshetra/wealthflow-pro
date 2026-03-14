@@ -123,15 +123,21 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    @apply font-sans transition-colors duration-200;
   }
   body {
-    @apply bg-background font-sans text-foreground;
+    @apply bg-background font-sans text-foreground transition-colors duration-200;
     background-image:
       radial-gradient(circle at top left, color-mix(in oklch, var(--color-chart-1) 18%, transparent), transparent 24rem),
       radial-gradient(circle at top right, color-mix(in oklch, var(--color-chart-2) 14%, transparent), transparent 20rem),
       linear-gradient(180deg, color-mix(in oklch, var(--background) 92%, white 8%), var(--background));
     background-attachment: fixed;
+  }
+  [data-slot="card"],
+  [data-slot="sidebar-inset"],
+  [data-slot="sidebar-inner"],
+  [data-slot="table-row"] {
+    @apply transition-colors duration-200;
   }
   ::selection {
     background: color-mix(in oklch, var(--primary) 28%, white 72%);

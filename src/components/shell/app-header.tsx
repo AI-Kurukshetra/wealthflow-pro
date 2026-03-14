@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 function getPageLabel(pathname: string) {
   const exact = primaryNavigation.find((item) => item.href === pathname);
@@ -40,18 +41,18 @@ export function AppHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border/70 bg-background/90 backdrop-blur-xl">
-      <div className="flex h-18 items-center gap-3 px-4 md:px-6">
+    <header className="sticky top-0 z-30 h-16 shrink-0 border-b border-border/70 bg-background/92 backdrop-blur-xl">
+      <div className="flex h-16 items-center gap-2 px-4 md:gap-3 md:px-6">
         <SidebarTrigger />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <p className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-primary lg:block">
             WealthFlow workspace
           </p>
-          <p className="truncate text-sm font-medium text-foreground">
+          <p className="truncate text-sm font-medium text-foreground md:text-base">
             {getPageLabel(pathname)}
           </p>
         </div>
-        <div className="relative hidden w-full max-w-md md:block">
+        <div className="relative hidden w-full max-w-md lg:block">
           <IconSearch className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="global-search"
@@ -96,7 +97,18 @@ export function AppHeader() {
             </div>
           </DialogContent>
         </Dialog>
-        <div className="hidden items-center gap-3 rounded-2xl border border-border/70 bg-card/90 px-3.5 py-2.5 shadow-sm shadow-black/5 md:flex">
+        <ThemeToggle />
+        <Button
+          aria-label={advisorProfile.name}
+          className="hidden rounded-full border-border/70 bg-card/90 shadow-sm shadow-black/5 md:inline-flex xl:hidden"
+          size="icon"
+          variant="outline"
+        >
+          <Avatar className="size-8">
+            <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
+          </Avatar>
+        </Button>
+        <div className="hidden items-center gap-3 rounded-2xl border border-border/70 bg-card/90 px-3.5 py-2 shadow-sm shadow-black/5 xl:flex">
           <Avatar className="size-9">
             <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
           </Avatar>

@@ -36,16 +36,17 @@ import {
 
 export default function DashboardPage() {
   const upcomingTasks = tasks.slice(0, 6);
+  const visibleActivity = recentActivity.slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 xl:space-y-6">
       <PageHeader
         eyebrow="Advisor dashboard"
         title="Good morning, Neha"
         description="Start with the accounts that need a touchpoint, the tasks that affect client confidence, and the portfolios drifting away from model intent."
         badge="Live workspace"
       />
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         <MetricCard
           title="Total AUM"
           value={dashboardMetrics.totalAum}
@@ -69,8 +70,8 @@ export default function DashboardPage() {
           icon={IconChecklist}
         />
       </div>
-      <div className="grid gap-4 xl:grid-cols-[1.55fr_1fr]">
-        <Card>
+      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.55fr)_minmax(20rem,0.95fr)]">
+        <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60">
             <CardTitle>Portfolio performance</CardTitle>
             <CardDescription>
@@ -78,20 +79,20 @@ export default function DashboardPage() {
               quarter.
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-5">
+          <CardContent className="pt-4">
             <PortfolioPerformanceChart />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/60">
             <CardTitle>Recent client activity</CardTitle>
             <CardDescription>
               Relationship events from the last operating cycle.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 pt-5">
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity) => (
+          <CardContent className="space-y-3.5 pt-4">
+            {visibleActivity.length > 0 ? (
+              visibleActivity.map((activity) => (
                 <div
                   key={activity.id}
                   className="flex items-start gap-3 rounded-2xl border border-border/70 bg-muted/20 p-3"
@@ -130,7 +131,7 @@ export default function DashboardPage() {
             The next commitments that shape service quality and compliance.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-5">
+        <CardContent className="pt-4">
           <Table>
             <TableHeader>
               <TableRow>
