@@ -8,8 +8,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider defaultOpen>
       <AppSidebar />
-      <SidebarInset className="min-h-svh bg-background/80 md:h-svh md:overflow-hidden">
-        <div className="flex min-h-svh flex-1 flex-col md:h-svh">
+      <SidebarInset className="h-svh overflow-hidden bg-background/80 md:h-[calc(100svh-1rem)]">
+        <div className="flex h-full flex-1 flex-col overflow-hidden">
           <AppHeader />
           <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 md:px-6 md:py-6">
             {children}

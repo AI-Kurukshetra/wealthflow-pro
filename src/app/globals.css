@@ -123,10 +123,10 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans transition-colors duration-200;
+    @apply h-full overflow-hidden font-sans transition-colors duration-200;
   }
   body {
-    @apply bg-background font-sans text-foreground transition-colors duration-200;
+    @apply h-full overflow-hidden bg-background font-sans text-foreground transition-colors duration-200;
     background-image:
       radial-gradient(circle at top left, color-mix(in oklch, var(--color-chart-1) 18%, transparent), transparent 24rem),
       radial-gradient(circle at top right, color-mix(in oklch, var(--color-chart-2) 14%, transparent), transparent 20rem),

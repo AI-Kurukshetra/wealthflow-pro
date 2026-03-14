@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body
         suppressHydrationWarning
-        className="min-h-screen font-sans antialiased"
+        className="h-full overflow-hidden font-sans antialiased"
       >
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
