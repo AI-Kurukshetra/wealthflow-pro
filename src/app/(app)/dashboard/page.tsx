@@ -35,6 +35,8 @@ import {
 } from "@/lib/mock-data";
 
 export default function DashboardPage() {
+  const upcomingTasks = tasks.slice(0, 6);
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -88,29 +90,36 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pt-5">
-            {recentActivity.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-start gap-3 rounded-2xl border border-border/70 bg-muted/20 p-3"
-              >
-                <Avatar className="size-10">
-                  <AvatarFallback>
-                    {activity.clientName
-                      .split(" ")
-                      .slice(0, 2)
-                      .map((part) => part[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1 space-y-1">
-                  <p className="text-sm font-medium">{activity.clientName}</p>
-                  <p className="text-sm text-muted-foreground">{activity.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatDateTime(activity.occurredAt)}
-                  </p>
+            {recentActivity.length > 0 ? (
+              recentActivity.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex items-start gap-3 rounded-2xl border border-border/70 bg-muted/20 p-3"
+                >
+                  <Avatar className="size-10">
+                    <AvatarFallback>
+                      {activity.clientName
+                        .split(" ")
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <p className="text-sm font-medium">{activity.clientName}</p>
+                    <p className="text-sm text-muted-foreground">{activity.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDateTime(activity.occurredAt)}
+                    </p>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="rounded-2xl border border-dashed border-border/80 bg-muted/15 p-6 text-sm text-muted-foreground">
+                No client activity has landed yet. Fresh updates will appear here as
+                advisors log notes, reviews, and follow-ups.
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       </div>
@@ -133,19 +142,31 @@ export default function DashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tasks.slice(0, 6).map((task) => (
-                <TableRow key={task.id}>
-                  <TableCell className="font-medium">{task.title}</TableCell>
-                  <TableCell>{task.clientName}</TableCell>
-                  <TableCell>
-                    <Badge variant={task.priority === "High" ? "default" : "secondary"}>
-                      {task.priority}
-                    </Badge>
+              {upcomingTasks.length > 0 ? (
+                upcomingTasks.map((task) => (
+                  <TableRow key={task.id}>
+                    <TableCell className="font-medium">{task.title}</TableCell>
+                    <TableCell>{task.clientName}</TableCell>
+                    <TableCell>
+                      <Badge variant={task.priority === "High" ? "default" : "secondary"}>
+                        {task.priority}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{task.status}</TableCell>
+                    <TableCell>{formatDateTime(task.dueAt)}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    className="py-8 text-center text-sm text-muted-foreground"
+                    colSpan={5}
+                  >
+                    No upcoming tasks are queued. New work will surface here as
+                    reminders, prep, and follow-ups are scheduled.
                   </TableCell>
-                  <TableCell>{task.status}</TableCell>
-                  <TableCell>{formatDateTime(task.dueAt)}</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

@@ -53,7 +53,7 @@ export function SettingsForm() {
             <FormItem>
               <FormLabel>Firm name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} autoComplete="organization" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,7 +66,7 @@ export function SettingsForm() {
             <FormItem>
               <FormLabel>Operations email</FormLabel>
               <FormControl>
-                <Input {...field} type="email" />
+                <Input {...field} type="email" autoComplete="email" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +78,11 @@ export function SettingsForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Timezone</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                name={field.name}
+                onValueChange={field.onChange}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Choose a timezone" />
@@ -104,7 +108,11 @@ export function SettingsForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Base currency</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                name={field.name}
+                onValueChange={field.onChange}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Choose a currency" />

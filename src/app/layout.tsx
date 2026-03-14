@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import { geistMono, geistSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,8 +22,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className="font-sans">
-      <body className="min-h-screen antialiased">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} font-sans`}
+    >
+      <body className="min-h-screen font-sans antialiased">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>

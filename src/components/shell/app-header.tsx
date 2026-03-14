@@ -51,10 +51,15 @@ export function AppHeader() {
             {getPageLabel(pathname)}
           </p>
         </div>
-        <div className="relative hidden w-full max-w-sm md:block">
+        <div className="relative hidden w-full max-w-md md:block">
           <IconSearch className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            className="border-border/70 bg-card/80 pl-10"
+            id="global-search"
+            name="globalSearch"
+            type="search"
+            autoComplete="off"
+            aria-label="Search households, tasks, or documents"
+            className="h-10 rounded-xl border-border/70 bg-card/80 pl-10 shadow-sm shadow-black/5"
             placeholder="Search households, tasks, or documents"
           />
         </div>
@@ -91,7 +96,7 @@ export function AppHeader() {
             </div>
           </DialogContent>
         </Dialog>
-        <div className="hidden items-center gap-3 rounded-2xl border border-border/70 bg-card/90 px-3 py-2 md:flex">
+        <div className="hidden items-center gap-3 rounded-2xl border border-border/70 bg-card/90 px-3.5 py-2.5 shadow-sm shadow-black/5 md:flex">
           <Avatar className="size-9">
             <AvatarFallback>{advisorProfile.initials}</AvatarFallback>
           </Avatar>
