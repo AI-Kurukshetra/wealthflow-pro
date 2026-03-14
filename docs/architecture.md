@@ -9,6 +9,8 @@ At a high level:
 - routing and layouts live in [`src/app`](../src/app)
 - reusable UI and shell code live in [`src/components`](../src/components)
 - app-level data helpers and formatting live in [`src/lib`](../src/lib)
+- unit and component tests live in [`src/test`](../src/test)
+- end-to-end tests live in [`e2e`](../e2e)
 - auth/session refresh is prepared in [`src/proxy.ts`](../src/proxy.ts)
 - Supabase schema and policies live in [`supabase/migrations`](../supabase/migrations)
 
@@ -117,6 +119,15 @@ Important: the live route pages do not currently call these helpers.
 - The `(app)` layout mounts a persistent shell via [`src/components/shell/app-shell.tsx`](../src/components/shell/app-shell.tsx).
 - The sidebar is collapsible on desktop and becomes a `Sheet` on mobile inside [`src/components/ui/sidebar.tsx`](../src/components/ui/sidebar.tsx).
 - The header remains sticky while route content scrolls inside the `<main>` region created by `AppShell`.
+
+## Testing Layer
+
+- [`jest.config.ts`](../jest.config.ts) uses `next/jest` so Jest respects the Next.js compiler, aliases, and environment loading.
+- [`jest.setup.ts`](../jest.setup.ts) centralizes DOM test setup needed by shadcn/radix primitives in jsdom.
+- [`src/test/test-utils.tsx`](../src/test/test-utils.tsx) wraps component tests with the same theme, tooltip, and optional sidebar providers used by the app shell.
+- [`playwright.config.ts`](../playwright.config.ts) runs cross-browser E2E coverage in Chromium, Firefox, and WebKit, with a local `baseURL` of `http://localhost:3000`.
+- [`.github/workflows/tests.yml`](../.github/workflows/tests.yml) codifies the lint, Jest, and Playwright workflow for CI on Node 20.
+- The current Playwright scope matches the app's shipped behavior. It covers login and route navigation, and leaves task creation as a skipped placeholder until that UI exists.
 
 ## Architectural Decisions
 

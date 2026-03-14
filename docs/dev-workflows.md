@@ -55,12 +55,17 @@ Current baseline checks:
 
 ```bash
 npm run lint
+npm run test
 npm run build
 ```
 
 What to use when:
 
 - always run `npm run lint` after code changes
+- run `npm run test` for component, shared widget, and mock-backed route behavior covered by Jest
+- run `npm run test:watch` in a second terminal during active development so unit and component tests rerun automatically
+- run `npm run test:e2e` for login and route navigation coverage; Playwright will start or reuse the local server through `playwright.config.ts`
+- if Playwright cannot launch a browser on Linux, run `npx playwright install` and, if host libraries are missing, `npx playwright install-deps` from a machine with sudo access
 - run `npm run build` for routing, provider, proxy, or cross-cutting changes
 - manually verify important routes when shell or nav changes are involved:
   - `/login`
@@ -69,7 +74,12 @@ What to use when:
   - `/clients/[id]`
   - `/settings`
 
-The repo currently has no dedicated unit-test or e2e-test command. If you add logic-heavy features, add tests or leave a clear note about the testing gap.
+Current automated coverage:
+
+- Jest + React Testing Library lives under [`src/test`](../src/test) for shell and shared component behavior
+- Playwright E2E coverage lives under [`e2e`](../e2e) for login plus dashboard, clients, portfolios, and tasks navigation flows
+- CI runs the same lint, Jest, and Playwright commands through [`.github/workflows/tests.yml`](../.github/workflows/tests.yml)
+- The tasks suite includes a skipped placeholder for task creation because the current UI does not expose task creation yet
 
 ## Seeding Workflow
 

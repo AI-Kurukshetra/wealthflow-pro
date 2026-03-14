@@ -17,6 +17,9 @@ Use npm. The repo ships with `package-lock.json`.
 npm install
 npm run dev
 npm run lint
+npm run test
+npm run test:e2e
+npm run test:watch
 npm run build
 npm run start
 npm run seed:wealthflow
@@ -30,6 +33,7 @@ src/app/
   page.tsx              Redirects / to /dashboard
   (app)/                Main authenticated shell routes
   (auth)/login/         Login route
+src/test/               Jest test utilities plus unit and component tests
 src/components/
   shell/                App shell, sidebar, header, page header, branding
   shared/               Reusable dashboard widgets
@@ -44,6 +48,9 @@ src/types/database.ts   Database typing used by Supabase helpers
 src/proxy.ts            Supabase session refresh proxy
 supabase/migrations/    Authoritative SQL schema and RLS rules
 scripts/                Utility scripts, including seeding
+e2e/                    Playwright end-to-end coverage for login and core routes
+jest.config.ts          Jest configuration built on next/jest
+playwright.config.ts    Playwright configuration for cross-browser E2E runs
 ```
 
 ## Architectural Constraints
@@ -94,6 +101,8 @@ scripts/                Utility scripts, including seeding
 ## Testing Expectations
 
 - Minimum check after code changes: `npm run lint`
+- Run `npm run test` when you change client components, shell behavior, shared widgets, or route composition that is covered by Jest.
+- Run `npm run test:e2e` when you change login, navigation, or route flows covered by Playwright.
 - Prefer `npm run build` when you change routing, providers, proxy behavior, or type boundaries.
 - Manually verify these routes when touching shared shell or navigation code:
   - `/login`
@@ -101,13 +110,15 @@ scripts/                Utility scripts, including seeding
   - `/clients`
   - `/clients/[id]`
   - `/settings`
-- The repository currently has no dedicated unit or e2e test suite. If you add non-trivial business logic, add tests or document why the change remains untested.
+- During active UI work, keep `npm run test:watch` running alongside `npm run dev` so component tests rerun on file changes.
+- The Playwright suite includes a documented placeholder for task creation because the current mock-backed tasks page has no task-creation control yet. Keep that test skipped until the UI exists.
 
 ## Known Caveats
 
 - [`src/proxy.ts`](src/proxy.ts) contains the intended Supabase session refresh logic, but the matcher is exported as `proxyConfig` rather than Next.js' standard `config`. Validate proxy behavior before assuming the matcher is active.
 - [`src/types/database.ts`](src/types/database.ts) is behind the SQL migration and omits several tables and views already defined in the database.
 - [`src/features`](src/features) exists but is currently unused; most features still live in route files plus shared components.
+- Playwright browser binaries may still require host libraries on Linux. If `npm run test:e2e` fails before tests start, run `npx playwright install` and, when needed, `npx playwright install-deps` on a machine where sudo is available.
 
 ## Recommended Reading Order
 
