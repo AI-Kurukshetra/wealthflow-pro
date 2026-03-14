@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WealthFlow Pro
 
-## Getting Started
+WealthFlow Pro is a Next.js 16 advisor workspace for wealth-management teams. The current repository combines a polished App Router dashboard shell and seeded demo flows with a richer Supabase data model that is ready to back the product once the UI is wired off mock data.
 
-First, run the development server:
+## Product Overview
+
+- CRM views for client households and relationship activity
+- Portfolio and transaction tracking
+- Tasks, meetings, documents, and compliance surfaces
+- Settings and analytics screens for advisor operations
+
+Today, the frontend mostly renders from [`src/lib/mock-data.ts`](src/lib/mock-data.ts), while the database foundation lives in [`supabase/migrations/20260314123000_wealthflow_core.sql`](supabase/migrations/20260314123000_wealthflow_core.sql) and the seed script in [`scripts/seed-wealthflow.mjs`](scripts/seed-wealthflow.mjs).
+
+## Tech Stack
+
+- Next.js 16 App Router with React 19 and TypeScript
+- Tailwind CSS v4
+- shadcn/ui with the `radix-nova` preset
+- Tabler icons
+- React Hook Form with Zod validation
+- Supabase for auth, Postgres, and Storage
+
+Key entry points:
+
+- App shell: [`src/components/shell/app-shell.tsx`](src/components/shell/app-shell.tsx)
+- Root layout: [`src/app/layout.tsx`](src/app/layout.tsx)
+- Auth proxy: [`src/proxy.ts`](src/proxy.ts)
+- Supabase clients: [`src/lib/supabase/server.ts`](src/lib/supabase/server.ts), [`src/lib/supabase/browser.ts`](src/lib/supabase/browser.ts)
+
+## Repository Shape
+
+```text
+src/
+  app/              Next.js routes and layouts
+  components/       Shell, shared widgets, forms, shadcn UI primitives
+  lib/              Mock data, formatters, navigation, Supabase helpers
+  types/            Database typing
+supabase/
+  migrations/       SQL schema and RLS policies
+scripts/
+  seed-wealthflow.mjs
+docs/
+  architecture.md
+  database.md
+  dev-workflows.md
+  ui-guidelines.md
+```
+
+## Setup
+
+### Prerequisites
+
+- Node.js 20+
+- npm
+- Optional: a Supabase project if you want auth/session refresh and seeded database data
+
+### Install
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+For local UI development, the app can render without Supabase credentials because the pages use mock data. For auth refresh and database seeding, add the following variables to `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
+SUPABASE_URL=...
+SUPABASE_SECRET_KEY=...
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` is also accepted by the seed script as a fallback secret key name.
+
+## Development Commands
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
+npm run start
+npm run seed:wealthflow
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+What each command does:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev`: starts the Next.js dev server
+- `npm run lint`: runs the repo ESLint config
+- `npm run build`: creates the production build
+- `npm run start`: serves the built app
+- `npm run seed:wealthflow`: upserts demo tenant data into Supabase
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database and Seeding
 
-## Learn More
+1. Apply the SQL in [`supabase/migrations/20260314123000_wealthflow_core.sql`](supabase/migrations/20260314123000_wealthflow_core.sql) to your Supabase project.
+2. Set the required environment variables.
+3. Run:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run seed:wealthflow
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The seed script creates a demo advisor user, one organization, memberships, clients, portfolios, tasks, meetings, documents, compliance records, activities, and audit logs.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+1. Install dependencies with `npm install`.
+2. Run `npm run build`.
+3. Provision a Supabase project and apply the migration.
+4. Configure runtime environment variables for the Next.js app:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+5. Deploy the built app with `npm run start` on Node, or through a platform that supports Next.js 16.
+6. Seed only non-production environments unless you explicitly want demo data in production.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Further Reading
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Architecture: [`docs/architecture.md`](docs/architecture.md)
+- Database model: [`docs/database.md`](docs/database.md)
+- UI rules: [`docs/ui-guidelines.md`](docs/ui-guidelines.md)
+- Dev workflow: [`docs/dev-workflows.md`](docs/dev-workflows.md)
+- Agent instructions: [`AGENTS.md`](AGENTS.md)
