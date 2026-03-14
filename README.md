@@ -1,123 +1,191 @@
 # WealthFlow Pro
 
-WealthFlow Pro is a Next.js 16 advisor workspace for wealth-management teams. The current repository combines a polished App Router dashboard shell and seeded demo flows with a richer Supabase data model that is ready to back the product once the UI is wired off mock data.
+> A multi-tenant advisor CRM and operations workspace for wealth-management firms. It combines client relationship management, portfolio tracking, task management, meetings, document handling, and analytics/compliance-oriented surfaces.
 
-## Product Overview
+---
 
-- CRM views for client households and relationship activity
-- Portfolio and transaction tracking
-- Tasks, meetings, documents, and compliance surfaces
-- Settings and analytics screens for advisor operations
+## 🚀 Current Product Status
 
-Today, the frontend mostly renders from [`src/lib/mock-data.ts`](src/lib/mock-data.ts), while the database foundation lives in [`supabase/migrations/20260314123000_wealthflow_core.sql`](supabase/migrations/20260314123000_wealthflow_core.sql) and the seed script in [`scripts/seed-wealthflow.mjs`](scripts/seed-wealthflow.mjs).
+Most authenticated product routes are now live Supabase-backed (server-rendered reads + client-side mutations), rather than mock-backed.
 
-## Tech Stack
+**Live Surfaces:**
+* Dashboard
+* Clients and client detail
+* Portfolios
+* Tasks
+* Meetings
+* Documents (including signed download flow)
+* Setup/bootstrap workspace flow
+* Login/session-protected shell
 
-- Next.js 16 App Router with React 19 and TypeScript
-- Tailwind CSS v4
-- shadcn/ui with the `radix-nova` preset
-- Tabler icons
-- React Hook Form with Zod validation
-- Supabase for auth, Postgres, and Storage
+**Demo / UI-Only Surfaces:**
+* Analytics page (mock-backed)
+* Settings page (form-only, no persistence)
 
-Key entry points:
+---
 
-- App shell: [`src/components/shell/app-shell.tsx`](src/components/shell/app-shell.tsx)
-- Root layout: [`src/app/layout.tsx`](src/app/layout.tsx)
-- Auth proxy: [`src/proxy.ts`](src/proxy.ts)
-- Supabase clients: [`src/lib/supabase/server.ts`](src/lib/supabase/server.ts), [`src/lib/supabase/browser.ts`](src/lib/supabase/browser.ts)
+## 💻 Tech Stack
 
-## Repository Shape
+* **Framework:** Next.js 16 App Router + React 19
+* **Language:** TypeScript (strict)
+* **Styling:** Tailwind CSS v4 + tw-animate-css
+* **Components:** shadcn/ui source components + Radix primitives + Tabler icons
+* **Forms:** React Hook Form + Zod
+* **Backend/Auth:** Supabase Auth + Postgres + Storage
+* **Testing:** Jest + React Testing Library, Playwright E2E
+* **CI:** GitHub Actions (lint + unit + e2e)
 
-```text
-src/
-  app/              Next.js routes and layouts
-  components/       Shell, shared widgets, forms, shadcn UI primitives
-  lib/              Mock data, formatters, navigation, Supabase helpers
-  types/            Database typing
-supabase/
-  migrations/       SQL schema and RLS policies
-scripts/
-  seed-wealthflow.mjs
-docs/
-  architecture.md
-  database.md
-  dev-workflows.md
-  ui-guidelines.md
-```
+---
 
-## Setup
+## 🛠️ Quick Start Guide
 
-### Prerequisites
+Follow these steps to get the app running locally.
 
-- Node.js 20+
-- npm
-- Optional: a Supabase project if you want auth/session refresh and seeded database data
+**Prerequisites:** Node.js 20+, npm, and a Supabase project.
 
-### Install
-
+### Step 1: Install Dependencies
 ```bash
 npm install
+
 ```
 
-### Environment Variables
+### Step 2: Set Up Environment Variables
 
-For local UI development, the app can render without Supabase credentials because the pages use mock data. For auth refresh and database seeding, add the following variables to `.env.local`:
+Create a `.env.local` file in the root directory and add your Supabase credentials. The app requires this to function.
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_SECRET_KEY=your_secret_key
+# Note: Use SUPABASE_SERVICE_ROLE_KEY as a fallback for the seed script if needed.
+
+```
+
+### Step 3: Set Up the Database
+
+Apply the Supabase migrations in this exact order:
+
+1. `supabase/migrations/20260314123000_wealthflow_core.sql`
+2. `supabase/migrations/20260314171000_wealthflow_auth_bootstrap.sql`
+
+### Step 4: Seed Demo Data
+
+Populate your database with demo data (organizations, memberships, clients, portfolios, tasks, etc.).
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
-SUPABASE_URL=...
-SUPABASE_SECRET_KEY=...
+npm run seed:wealthflow
+
 ```
 
-`SUPABASE_SERVICE_ROLE_KEY` is also accepted by the seed script as a fallback secret key name.
+* **Demo Email:** `vineeth.motati@wealthflow.in`
+* **Demo Password:** `WealthFlow123!`
+*(Note: The CLI seed inserts document metadata rows but does not upload storage objects. The in-app setup flow uploads sample document files but omits compliance/audit records.)*
 
-## Development Commands
+### Step 5: Run the App
 
 ```bash
 npm run dev
-npm run lint
-npm run build
-npm run start
-npm run seed:wealthflow
+
 ```
 
-What each command does:
+**Important Routes:**
 
-- `npm run dev`: starts the Next.js dev server
-- `npm run lint`: runs the repo ESLint config
-- `npm run build`: creates the production build
-- `npm run start`: serves the built app
-- `npm run seed:wealthflow`: upserts demo tenant data into Supabase
+* `/login` - Authentication
+* `/setup` - First-time workspace provisioning
+* `/dashboard` - Main app entry after login
 
-## Database and Seeding
+---
 
-1. Apply the SQL in [`supabase/migrations/20260314123000_wealthflow_core.sql`](supabase/migrations/20260314123000_wealthflow_core.sql) to your Supabase project.
-2. Set the required environment variables.
-3. Run:
+## 📜 Useful Commands
 
-```bash
-npm run seed:wealthflow
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start development server |
+| `npm run build` | Build the production application |
+| `npm run start` | Start the production server |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run unit tests (Jest) |
+| `npm run test:watch` | Run unit tests in watch mode |
+| `npm run test:e2e` | Run end-to-end tests (Playwright) |
+| `npm run seed:wealthflow` | Seed the database with demo data |
+
+---
+
+## 📁 Repository Structure
+
+```text
+src/
+  app/                    App Router routes, layouts, route handlers
+    (app)/                Authenticated product shell routes
+    (auth)/login/         Login route
+    api/                  Route handlers (document download signing)
+  components/
+    shell/                App shell, sidebar, header, page header
+    shared/               Reusable widgets (metrics, chart)
+    forms/                Login and settings forms
+    clients/              Client create/edit dialog
+    tasks/                Task workspace
+    documents/            Document upload dialog
+    ui/                   Checked-in shadcn/ui primitives
+  lib/
+    auth/                 Auth server actions
+    supabase/             Browser/server Supabase clients + env helpers
+    wealthflow/           Server query layer + demo workspace provisioning
+    mock-data.ts          Mock data still used by analytics
+  types/
+    database.ts           Supabase TypeScript DB types
+supabase/
+  migrations/             Authoritative schema, RLS, auth bootstrap
+scripts/
+  seed-wealthflow.mjs     CLI seed tool
+docs/                     Documentation files
+
 ```
 
-The seed script creates a demo advisor user, one organization, memberships, clients, portfolios, tasks, meetings, documents, compliance records, activities, and audit logs.
+---
 
-## Deployment
+## 🏗️ Architecture Notes
 
-1. Install dependencies with `npm install`.
-2. Run `npm run build`.
-3. Provision a Supabase project and apply the migration.
-4. Configure runtime environment variables for the Next.js app:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-5. Deploy the built app with `npm run start` on Node, or through a platform that supports Next.js 16.
-6. Seed only non-production environments unless you explicitly want demo data in production.
+* **Route protection & session refresh:** Managed in middleware.
+* **Auth server actions:** Located in `actions.ts`.
+* **Live server query layer:** Handled in `server.ts`.
+* **Demo workspace bootstrap action:** Located in `actions.ts`.
+* **Document download signing:** Managed via API `route.ts`.
 
-## Further Reading
+---
 
-- Architecture: [`docs/architecture.md`](docs/architecture.md)
-- Database model: [`docs/database.md`](docs/database.md)
-- UI rules: [`docs/ui-guidelines.md`](docs/ui-guidelines.md)
-- Dev workflow: [`docs/dev-workflows.md`](docs/dev-workflows.md)
-- Agent instructions: [`AGENTS.md`](AGENTS.md)
+## 🧪 Testing and CI
+
+**Local Testing:** Run `npm run lint`, `npm run test`, and `npm run test:e2e` before committing.
+
+**CI Workflow (GitHub Actions):**
+
+1. `npm ci`
+2. `npm run lint`
+3. `npm run test`
+4. Playwright browser install
+5. `npm run test:e2e`
+
+---
+
+## ⚠️ Known Gaps
+
+* **Analytics:** Currently mock-backed; not yet wired to live Supabase queries.
+* **Settings:** Form has no persistence layer yet.
+* **Missing Pages:** No dedicated views for goals, compliance records, audit logs, risk profiles, or membership management.
+* **Search/Filters:** Header/client search and filter controls are placeholders.
+* **Read-Only Data:** Meetings and portfolios cannot currently be created, edited, or deleted in the UI.
+
+---
+
+## 📚 Additional Documentation
+
+For deeper technical details, check the `/docs` folder:
+
+* `system-context.md`
+* `architecture.md`
+* `database.md`
+* `dev-workflows.md`
+* `ui-guidelines.md`
+* `AGENTS.md`
